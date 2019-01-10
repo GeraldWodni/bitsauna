@@ -30,3 +30,5 @@ compiletoflash
 
 \ delay for n ms
 : ms ( n -- ) 0 ?do 1ms loop ;
+
+cornerstone pcold

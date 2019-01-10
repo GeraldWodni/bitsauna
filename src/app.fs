@@ -13,3 +13,5 @@ compiletoflash
         then lcd-emit
 
     key? until ;
+
+: init init app ;

@@ -9,4 +9,6 @@
 #include pwm.fs
 #include lcd.fs
 
+#include app.fs
+
 \ #include spi.fs

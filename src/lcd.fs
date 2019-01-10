@@ -26,6 +26,45 @@ compiletoflash
      0 lcd-en gpio!
     10 us ;
 
+: lcd-read-status ( -- x )
+    lcd-mode-cmd
+    lcd-d4 gpio-input
+    lcd-d5 gpio-input
+    lcd-d6 gpio-input
+    lcd-d7 gpio-input
+
+    -1 lcd-rw gpio!
+    10 us
+
+    0 \ read upper nibble
+    -1 lcd-en gpio!
+    10 us
+    $10 lcd-d4 gpio@ and or
+    $20 lcd-d5 gpio@ and or
+    $40 lcd-d6 gpio@ and or
+    $80 lcd-d7 gpio@ and or
+    10 us
+     0 lcd-en gpio!
+    10 us
+
+    \ read lower nibble
+    -1 lcd-en gpio!
+    10 us
+    $01 lcd-d4 gpio@ and or
+    $02 lcd-d5 gpio@ and or
+    $04 lcd-d6 gpio@ and or
+    $08 lcd-d7 gpio@ and or
+    10 us
+     0 lcd-en gpio!
+
+     0 lcd-rw gpio!
+    10 us
+    lcd-d4 gpio-output
+    lcd-d5 gpio-output
+    lcd-d6 gpio-output
+    lcd-d7 gpio-output
+    10 us ;
+
 \ --- low level interface ---
 \ send byte to display
 : lcd-emit ( x -- )
@@ -98,6 +137,16 @@ compiletoflash
     lcd-clear                   \ clear display
     -1 0 lcd-entry-mode ;       \ increment on store, no shift
 
+\ initialize by instruction
+: lcd-reset ( f-lines -- )
+    lcd-mode-cmd
+    40 ms
+    $03 lcd-nibble
+    5 ms
+    $03 lcd-nibble
+    100 us
+    $03 lcd-nibble
+    lcd-init ;
 
 \ --- high level interface ---
 \ send string to display
@@ -126,7 +175,7 @@ compiletoflash
     loop lcd-home ;
 
 : init ( -- )
-    init lcd-init
+    init -1 lcd-reset
     lcd" bitsauna"
     $40 lcd-ddram
     lcd" init" ;

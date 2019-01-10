@@ -30,7 +30,7 @@ compiletoflash
     %1111 -rot gpio-configure ;
 
 : gpio-input        ( n-pin addr-port -- )
-    %0010 -rot gpio-configure ;
+    %0100 -rot gpio-configure ;
 
 : gpio-input-pullup ( n-pin addr-port -- )
     over bit
@@ -58,6 +58,7 @@ compiletoflash
 \ named ports
  0 GPIOA 2constant lcd-en
  1 GPIOA 2constant lcd-rs
+ 2 GPIOA 2constant lcd-rw
  4 GPIOA 2constant lcd-d4
  5 GPIOA 2constant lcd-d5
  6 GPIOA 2constant lcd-d6
@@ -106,9 +107,12 @@ compiletoflash
 
     lcd-en  gpio-output
     lcd-rs gpio-output
+    lcd-rw gpio-output
     lcd-d4  gpio-output
     lcd-d5  gpio-output
     lcd-d6  gpio-output
-    lcd-d7  gpio-output ;
+    lcd-d7  gpio-output
+    0 lcd-rw gpio! ;
+
 
 cornerstone gcold
