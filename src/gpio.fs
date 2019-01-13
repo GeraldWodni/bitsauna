@@ -68,6 +68,9 @@ compiletoflash
  2 GPIOB 2constant sw2
  3 GPIOB 2constant sw3
 
+13 GPIOB 2constant th-sck
+15 GPIOB 2constant th-cs
+
 \ fetch button mask
 : buttons@ ( -- x )
     0
@@ -106,12 +109,17 @@ compiletoflash
     sw3 gpio-input-pullup
 
     lcd-en  gpio-output
-    lcd-rs gpio-output
-    lcd-rw gpio-output
+    lcd-rs  gpio-output
+    lcd-rw  gpio-output
     lcd-d4  gpio-output
     lcd-d5  gpio-output
     lcd-d6  gpio-output
     lcd-d7  gpio-output
+
+    th-sck  gpio-output
+    th-cs   gpio-output
+    -1 th-cs gpio!
+
     0 lcd-rw gpio! ;
 
 

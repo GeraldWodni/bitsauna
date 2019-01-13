@@ -7,8 +7,8 @@
 #include standard.fs
 #include gpio.fs
 #include pwm.fs
+#include spi.fs
+#include thermo.fs
 #include lcd.fs
 
 #include app.fs
-
-\ #include spi.fs

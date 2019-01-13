@@ -4,14 +4,26 @@
 compiletoflash
 
 : app ( -- )
+    $40 lcd-ddram lcd" T1: "
+    $48 lcd-ddram lcd" Ti: "
     begin
-        $4F lcd-ddram
+        $0F lcd-ddram
         buttons@ $1 and if
             [CHAR] 1
         else
             [CHAR] 0
         then lcd-emit
 
+        spi-ro32
+        cr dup hex. \ debug the stuff
+        $44 lcd-ddram
+        dup th-temp lcd.
+
+        $4C lcd-ddram
+            th-itemp lcd.
+
     key? until ;
 
 : init init app ;
+
+cornerstone acold
