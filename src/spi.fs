@@ -21,19 +21,27 @@ compiletoflash
 
 \ read 32 bits
 : spi-ro32 ( -- x )
-    0 th-cs gpio!
-
     $FF spi 16 lshift
-    $FF spi or
+    $FF spi or ;
     
-    -1 th-cs gpio! ;
+: spi-read-th1 ( -- x )
+    0 th-cs1 gpio!
+    spi-ro32
+    -1 th-cs1 gpio! ;
+
+: spi-read-th2 ( -- x )
+    0 th-cs2 gpio!
+    spi-ro32
+    -1 th-cs2 gpio! ;
+
 
 : init-spi
     $4000 RCC_APB1ENR bis!  \ enable SPI2 Clock
 
     \ set pin to SPI
     th-sck gpio-alternate
-    -1 th-cs gpio!
+    -1 th-cs1 gpio!
+    -1 th-cs2 gpio!
 
     \ Master Mode: Set SSM and SSI in CR1
 
@@ -64,7 +72,8 @@ compiletoflash
 
 : spi.. ( -- )
     begin
-        cr spi-ro32 hex.
+        cr spi-read-th1 hex.
+        spi-read-th2 hex.
     key? until ;
 
 : init init init-spi ;

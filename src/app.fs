@@ -5,7 +5,7 @@ compiletoflash
 
 : app ( -- )
     $40 lcd-ddram lcd" T1: "
-    $48 lcd-ddram lcd" Ti: "
+    $48 lcd-ddram lcd" T2: "
     begin
         $0F lcd-ddram
         buttons@ $1 and if
@@ -14,13 +14,14 @@ compiletoflash
             [CHAR] 0
         then lcd-emit
 
-        spi-ro32
+        spi-read-th1
         cr dup hex. \ debug the stuff
         $44 lcd-ddram
-        dup th-temp lcd.
+        th-temp lcd.
 
+        spi-read-th2
         $4C lcd-ddram
-            th-itemp lcd.
+        th-temp lcd.
 
     key? until ;
 

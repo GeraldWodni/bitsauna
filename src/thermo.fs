@@ -1,6 +1,7 @@
 \ MAX31855 thermocouple amplifier driver
 \ (c)copyright 2019 by Gerald Wodni <gerald.wodni@gmail.com>
 
+compiletoflash
 
 : th-read ( -- x )
     ;
