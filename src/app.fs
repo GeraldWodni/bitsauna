@@ -14,14 +14,12 @@ compiletoflash
             [CHAR] 0
         then lcd-emit
 
-        spi-read-th1
-        cr dup hex. \ debug the stuff
-        $44 lcd-ddram
-        th-temp lcd.
-
-        spi-read-th2
+        spi-read-both
         $4C lcd-ddram
-        th-temp lcd.
+            th-temp lcd.
+
+        $44 lcd-ddram
+            th-temp lcd.
 
     key? until ;
 

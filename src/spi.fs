@@ -23,7 +23,7 @@ compiletoflash
 : spi-ro32 ( -- x )
     $FF spi 16 lshift
     $FF spi or ;
-    
+
 : spi-read-th1 ( -- x )
     0 th-cs1 gpio!
     spi-ro32
@@ -34,6 +34,9 @@ compiletoflash
     spi-ro32
     -1 th-cs2 gpio! ;
 
+: spi-read-both ( -- x1 x2 )
+    spi-read-th1
+    spi-read-th2 ;
 
 : init-spi
     $4000 RCC_APB1ENR bis!  \ enable SPI2 Clock
@@ -72,8 +75,7 @@ compiletoflash
 
 : spi.. ( -- )
     begin
-        cr spi-read-th1 hex.
-        spi-read-th2 hex.
+        cr spi-read-both swap hex. hex.
     key? until ;
 
 : init init init-spi ;

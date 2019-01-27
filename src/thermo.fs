@@ -6,7 +6,7 @@ compiletoflash
 : th-read ( -- x )
     ;
 
-\ get extneral temperature
+\ get external temperature
 : th-temp ( x -- n )
     dup $10007 and if
         drop -1 \ error (OC, Short or general Fault)
