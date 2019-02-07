@@ -8,11 +8,7 @@ compiletoflash
     $48 lcd-ddram lcd" T2: "
     begin
         $0F lcd-ddram
-        buttons@ $1 and if
-            [CHAR] 1
-        else
-            [CHAR] 0
-        then lcd-emit
+        buttons@ lcd.
 
         spi-read-both
         $4C lcd-ddram

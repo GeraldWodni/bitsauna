@@ -65,8 +65,8 @@ compiletoflash
  7 GPIOA 2constant lcd-d7
 
  0 GPIOB 2constant sw1
- 2 GPIOB 2constant sw2
- 3 GPIOB 2constant sw3
+ 1 GPIOB 2constant sw2
+10 GPIOB 2constant sw3
 
 13 GPIOB 2constant th-sck
 15 GPIOB 2constant th-cs1
