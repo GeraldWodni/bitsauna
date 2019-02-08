@@ -72,6 +72,8 @@ compiletoflash
 15 GPIOB 2constant th-cs1
 12 GPIOB 2constant th-cs2
 
+11 GPIOB 2constant pwm
+
 \ fetch button mask
 : buttons@ ( -- x )
     0
@@ -122,6 +124,8 @@ compiletoflash
     -1 th-cs1 gpio!
     th-cs2  gpio-output
     -1 th-cs2 gpio!
+
+    pwm gpio-alternate
 
     0 lcd-rw gpio! ;
 
