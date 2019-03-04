@@ -29,6 +29,9 @@ compiletoflash
 : pwm! ( n -- )
     100 * TIM2 TIMx_CCR4 h! ;
 
+: pwm@ ( -- n )
+    TIM2 TIMx_CCR4 h@ 100 / ;
+
 \ delay for n us
 : us ( -- )  TIM2 TIMx_CNT @ + 1000 mod begin TIM2 TIMx_CNT @ over = until drop ;
 
