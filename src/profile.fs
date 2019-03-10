@@ -37,46 +37,40 @@ profile !
     >r r@ cell - @
        r> cell + @ ;
 
+: range>offset-diff ( n-start n-end -- n-off n-diff )
+    over - ;
+
+: get-temp-offset-diff ( addr-profile -- n-off n-diff )
+    get-temp-range range>offset-diff ;
+
 : get-time-range ( addr-profile -- n-start n-end )
 \ time range of current section
     cell - get-temp-range ; \ just offset by one cell to get corresponding times
 
 : range>fraction ( n-current n-start n-end -- n-numerator n-denominator )
-    2dup swap - >r \ denominator = end-start
-    drop - r> ;    \ nominator = current-start
+    >r >r r@ -      \ nominator = current - start
+    r> r> swap - ;  \ denominator = end-start
 
-: get-time-fraction ( n-time addr-profile -- n-numerator n-denominator )
-    get-time-range range>fraction ;
+: get-time-fraction ( n-time addr-profile -- n-denominator n-numerator )
+    get-time-range range>fraction swap ;
+
 
 : get-temp ( n-time -- n-temp )
     >r r@ get-match dup @ r@ <= if
         r> drop
         drop 0
     else
-        ." FR "
-        \ cell+ @
-        r@ over get-time-fraction swap .t .t
-        ." Temp "
-        dup get-time-range swap .t .t
-        ." Time "
-            get-temp-range swap .t .t
-
-        13
-        r> drop
+        >r r@ get-temp-offset-diff  \ n-off n-diff
+        r> r> swap get-time-fraction
+        rot * swap / \ scale with fraction
+        + \ add offset
     then
     ;
 
-: test ( n-time -- )
-    cr
-    dup .t ." s: "
-    dup get-match dup @ .t cell + @ .t
-    get-temp .t ;
+: test ( n-end n-end -- )
+    do
+        cr i .t ." :  " i get-temp .t
+    10 +loop ;
 
-  0 test
- 15 test
- 30 test
-250 test
-300 test
-400 test
+320 0 test
 
-bye
