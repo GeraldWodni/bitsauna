@@ -446,6 +446,10 @@ FLASH $10 + constant FLASH_CR
 FLASH $14 + constant FLASH_AR
 FLASH $1C + constant FLASH_OBR
 FLASH $20 + constant FLASH_WRPR
+
+\ === Systick
+$E000E010 constant SYST_CSR
+$E000E014 constant SYST_RVR
         
 	
 \ === Nested Vector Interrupt Controller

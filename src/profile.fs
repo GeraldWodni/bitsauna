@@ -7,16 +7,9 @@ create leadfree
     200 , 231 , \ melting
     300 ,   0 , \ ramp-down
 
-leadfree 12 cells dump
+\ leadfree 12 cells dump
 
 leadfree variable profile
-profile !
-
-: get-low-point ( n-time addr-profile -- addr )
-    
-    ;
-: get-high-point ( n-time addr-profile -- addr )
-    ;
 
 : get-match ( n-time -- addr-profile )
     profile @   \ time addr
@@ -28,9 +21,6 @@ profile !
         2 cells +
     repeat nip ;
 
-
-: .t ( n -- )
-    3 .r space ;
 
 : get-temp-range ( addr-profile -- n-start n-end )
 \ temperature range of current section
@@ -64,13 +54,42 @@ profile !
         r> r> swap get-time-fraction
         rot * swap / \ scale with fraction
         + \ add offset
-    then
-    ;
+    then ;
 
-: test ( n-end n-end -- )
+: test-profile ( n-end n-end -- )
     do
-        cr i .t ." :  " i get-temp .t
+        cr i . ." :  " i get-temp .
     10 +loop ;
 
 320 0 test
 
+
+
+\ systick handler
+0 variable profile-time     \ seconds since profile start
+0 variable profile-target   \ profile target temperature (updated once / second
+: profile-systick ( -- )
+    profile-time @ 1+ dup profile-time !    \ increment and get time
+    get-temp dup profile-target !           \ set current target temperature
+    0= if
+        0 SYST_CSR !    \ disable systick once target (target-temp=0) is reached
+    then ;
+
+: start-profile ( -- )
+    \ reset time
+    -1 profile-time !
+    profile-systick \ execute for initial value
+
+    \ setup systick
+    ['] profile-systick irq-systick !
+    72000000 10 / SYST_RVR !
+    7 SYST_CSR ! ;
+
+: watch-profile ( -- )
+    start-profile
+    begin
+        cr profile-target @ .
+        1 ms
+    key? until ;
+
+: p. profile-time @ . profile-target @ . SYST_CSR @ . ;
