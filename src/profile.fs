@@ -61,23 +61,27 @@ leadfree variable profile
         + \ add offset
     then ;
 
-: test-profile ( n-end n-end -- )
+: profile. ( n-end n-start -- )
     do
         cr i . ." :  " i get-temp .
     10 +loop ;
 
-320 0 test
+\ 320 0 profile.
 
+: stop-profile ( -- )
+    0 SYST_CSR ! ;
 
+: profile-active? ( -- f )
+    SYST_CSR @ $7 and 0<> ;
 
 \ systick handler
-0 variable profile-time     \ seconds since profile start
-0 variable profile-target   \ profile target temperature (updated once / second
+0 variable profile-time \ seconds since profile start
+0 variable setpoint     \ profile setpoint (updated once / second by systick if ative)
 : profile-systick ( -- )
     profile-time @ 1+ dup profile-time !    \ increment and get time
-    get-temp dup profile-target !           \ set current target temperature
+    get-temp dup setpoint !                 \ set current target temperature
     0= if
-        0 SYST_CSR !    \ disable systick once target (target-temp=0) is reached
+        stop-profile    \ disable systick once target (target-temp=0) is reached
     then ;
 
 : start-profile ( -- )

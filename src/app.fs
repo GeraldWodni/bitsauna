@@ -3,43 +3,64 @@
 
 compiletoflash
 
-30 variable setpoint
-: app ( -- )
-    $40 lcd-ddram lcd" T1: "
-    $48 lcd-ddram lcd" T2: "
-    begin
-        $0F lcd-ddram
-        buttons@ lcd.
+\ lcd layout
+\              PWM  \ function
+\ 0123456789ABCDEF  \ column
+\ PR1 #123/123 #12  \ 1st line
+\   #123 #123 #123  \ 2nd line
+\  T1   T2   SETP.  \ function
 
-        buttons@ ?dup if
-            buttons@ 230 * 4 / setpoint !
-            $00 lcd-ddram lcd" SET:    "
-            $04 lcd-ddram setpoint @ lcd.
-        then
+: app-buttons ( -- )
+    buttons@ ?dup if
+        case
+            1 of start-profile endof
+            2 of
+                stop-profile
+                0 setpoint !
+            endof
+        endcase
+    then
+
+    0 lcd-ddram
+    profile-active? if
+        lcd" RHS"
+        5 lcd-ddram profile-time @ lcd3.
+    else
+        lcd" OFF"
+    then ;
+
+: app ( -- )
+    lcd-clear
+    $04 lcd-ddram 3 lcd-emit \ Time pattern
+    $0D lcd-ddram 4 lcd-emit \ PWM pattern
+    $42 lcd-ddram 1 lcd-emit \ Temp 1 pattern
+    $47 lcd-ddram 2 lcd-emit \ Temp 2 pattern
+    $4C lcd-ddram 0 lcd-emit \ Setpoint pattern
+    begin
+        app-buttons
 
         spi-read-both
-        $4C lcd-ddram
-            th-temp lcd.
+        $48 lcd-ddram
+            th-temp lcd3.
 
-        $44 lcd-ddram
-            th-temp dup lcd.
+        $43 lcd-ddram
+            th-temp dup lcd3.
 
-        setpoint @ swap -    \ get difference
+        setpoint @
+        $4D lcd-ddram dup lcd3.
+
+        swap -               \ get difference
         2/                   \ scale "P"
         10 min 0 max pwm!    \ limit and set
 
-        $0D lcd-ddram
-            pwm@ lcd.
+        $0E lcd-ddram
+            pwm@ lcd2.
 
     key? until ;
 
-: init init app ;
+\ : init init app ;
 
-\ lcd layout
-\              PWM
-\ 1234567891123456
-\ PR1 #123/123 #12
-\   #123 #123 #123
-\  T1   T2   SETP.
 
 cornerstone acold
+
+app

@@ -53,6 +53,17 @@ create pattern-pwm \ stored in char 4
     %00000 c,
     %11111 c,
 
+\ some utility functions
+\ display 2 digit number with optional leading 0
+: lcd2. ( n -- )
+    dup  10 < if [CHAR] 0 lcd-emit then
+    lcd. ;
+
+\ display 3 digit number with optional leading 0s
+: lcd3. ( n -- )
+    dup 100 < if [CHAR] 0 lcd-emit then
+    lcd2. ;
+
 : init ( -- )
     init
     pattern-setpoint    0 lcd-char
