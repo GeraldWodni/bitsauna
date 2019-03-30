@@ -35,4 +35,11 @@ compiletoflash
 
 : init init app ;
 
+\ lcd layout
+\              PWM
+\ 1234567891123456
+\ PR1 #123/123 #12
+\   #123 #123 #123
+\  T1   T2   SETP.
+
 cornerstone acold

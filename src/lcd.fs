@@ -176,7 +176,7 @@ compiletoflash
 
 : init ( -- )
     init -1 lcd-reset
-    lcd" bitsauna PWM:"
+    lcd" bitsauna"
     $40 lcd-ddram
     lcd" init" ;
 

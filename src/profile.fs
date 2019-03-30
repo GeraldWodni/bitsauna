@@ -1,3 +1,8 @@
+\ profile - heat curve management
+\ (c)copyright 2019 by Gerald Wodni <gerald.wodni@gmail.com>
+
+compiletoflash
+
 \ profiles: [<n-seconds> <n-temp>]+ last temp is zero
 create leadfree
       0 ,  31 , \ start
@@ -85,11 +90,4 @@ leadfree variable profile
     72000000 10 / SYST_RVR !
     7 SYST_CSR ! ;
 
-: watch-profile ( -- )
-    start-profile
-    begin
-        cr profile-target @ .
-        1 ms
-    key? until ;
-
-: p. profile-time @ . profile-target @ . SYST_CSR @ . ;
+cornerstone procold

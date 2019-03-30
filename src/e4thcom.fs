@@ -10,5 +10,7 @@
 #include spi.fs
 #include thermo.fs
 #include lcd.fs
+#include lcd-patterns.fs
+#include profile.fs
 
 #include app.fs
