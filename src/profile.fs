@@ -51,7 +51,7 @@ leadfree variable profile
         2 cells +
     repeat
     2 cells + dup @ \ get length
-    cell + swap ;   \ string start
+    swap cell + swap ;   \ string start
 
 : get-match ( n-time -- addr-profile )
     profile @   \ time addr
