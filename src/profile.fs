@@ -3,14 +3,31 @@
 
 compiletoflash
 
-\ profiles: [<n-seconds> <n-temp>]+ last temp is zero
+\ profiles: [<n-seconds> <n-temp>]+ ( last temp is zero ) <n-name> [<char-name]+
 create leadfree
       0 ,  31 , \ start
      30 , 151 , \ ramp-up 1
     120 , 181 , \ flux-activate
-    140 , 231 , \ ramp-up 2
+    140 , 231 , \ ramp-up 2:ta
     200 , 231 , \ melting
     300 ,   0 , \ ramp-down
+    4   ,
+    CHAR R c, 
+    CHAR o c, 
+    CHAR H c, 
+    CHAR S c, 
+
+create p100
+      0 ,  31 , \ start
+     30 , 100 , \ ramp-up
+     90 , 100 , \ keep 100
+    150 ,   0 , \ cool down
+    4   ,
+    CHAR P c, 
+    CHAR 1 c, 
+    CHAR 0 c, 
+    CHAR 0 c, 
+
 
 \ leadfree 12 cells dump
 
@@ -25,6 +42,16 @@ leadfree variable profile
         drop            \ drop time
         2 cells +
     repeat nip ;
+
+: profile-name ( -- c-addr n )
+    profile @
+    begin
+        dup cell + @
+    while
+        2 cells +
+    repeat
+    2 cells + dup @ \ get length
+    cell + swap ;   \ string start
 
 : get-match ( n-time -- addr-profile )
     profile @   \ time addr
