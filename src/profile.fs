@@ -157,7 +157,16 @@ create profiles
 \ systick handler
 0 variable profile-time \ seconds since profile start
 0 variable setpoint     \ profile setpoint (updated once / second by systick if ative)
+0 variable sys100hz     \ systick counter
+9 GPIOB 2constant oszi
 : profile-systick ( -- )
+    sys100hz @ 0 > if    \ divide frequency by 100
+        -1 sys100hz +!
+        exit
+    else
+        99 sys100hz !
+        oszi gpio@ 0= oszi gpio!
+    then
     profile-time @ 1+ dup profile-time !    \ increment and get time
     get-temp dup setpoint !                 \ set current target temperature
     0= if
@@ -165,13 +174,15 @@ create profiles
     then ;
 
 : start-profile ( -- )
+    oszi gpio-output
     \ reset time
+    0 sys100hz !
     -1 profile-time !
     profile-systick \ execute for initial value
 
     \ setup systick
     ['] profile-systick irq-systick !
-    72000000 10 / SYST_RVR !
+    720000 SYST_RVR !
     7 SYST_CSR ! ;
 
 cornerstone procold
