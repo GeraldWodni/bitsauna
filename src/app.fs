@@ -25,8 +25,11 @@ compiletoflash
     profile-active? if
         lcd" RHS"
         5 lcd-ddram profile-time @ lcd3.
+        [CHAR] / lcd-emit
+        profile-total-time lcd3.
     else
         lcd" OFF"
+        5 lcd-ddram lcd" -Start?"
     then ;
 
 : app ( -- )

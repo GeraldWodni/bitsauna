@@ -16,6 +16,16 @@ create leadfree
 
 leadfree variable profile
 
+: profile-total-time ( -- n-time )
+    profile @
+    begin
+        dup @           \ get time
+        over cell + @   \ within bounds
+    while
+        drop            \ drop time
+        2 cells +
+    repeat nip ;
+
 : get-match ( n-time -- addr-profile )
     profile @   \ time addr
     begin
@@ -25,7 +35,6 @@ leadfree variable profile
     while
         2 cells +
     repeat nip ;
-
 
 : get-temp-range ( addr-profile -- n-start n-end )
 \ temperature range of current section
