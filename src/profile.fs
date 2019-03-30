@@ -28,11 +28,55 @@ create p100
     CHAR 0 c, 
     CHAR 0 c, 
 
+create p222
+      0 ,  31 , \ start
+     30 , 222 , \ ramp-up
+     90 , 222 , \ keep 100
+    150 ,   0 , \ cool down
+    4   ,
+    CHAR P c,
+    CHAR 2 c,
+    CHAR 2 c,
+    CHAR 2 c,
+
 
 \ leadfree 12 cells dump
 
 leadfree variable profile
 
+\ profile switching
+create profiles
+    leadfree ,
+    p100 ,
+    p222 ,
+3 constant profiles#
+
+: get-profile-index ( -- n-index )
+    0 profiles
+    begin
+        profile @ over @ <>
+    while
+        swap 1+ swap \ increment index
+        cell +
+    repeat drop ;
+
+\ set current profile by index
+: profile-by-index ( n-index -- )
+    profiles swap cells + \ get profile address
+    @ profile ! ; \ set as active
+
+: next-profile ( -- )
+    get-profile-index 1+ dup
+    profiles# >= if drop 0 then   \ next or wrap
+    profile-by-index ;
+
+: prev-profile ( -- )
+    get-profile-index dup
+    0= if drop profiles# then \ previous or wrap
+    1- \ prev index
+    profile-by-index ;
+
+\ profile data
 : profile-total-time ( -- n-time )
     profile @
     begin
