@@ -37,6 +37,13 @@ compiletoflash
         profile-name lcd-type
     then ;
 
+: lcd-temp. ( n -- )
+    dup -1 = if
+        drop lcd" ERR"
+    else
+        lcd3.
+    then ;
+
 -1 variable last-time
 : app-log ( n-current n-setpoint -- )
     \ only report in second intervals
@@ -47,24 +54,48 @@ compiletoflash
         drop 2drop
     then ;
 
+\ compute average (ignore errornous sensor)
+: th-avg ( n1 n2 -- n3 )
+    dup -1 = if \ 2nd sensor broken
+        drop exit
+    then
+    over -1 = if \ 1st sensor broken
+        nip exit
+    then
+    + 2/ ;  \ both working, avg it
+
 : app ( -- )
     lcd-clear
-    $0D lcd-ddram 4 lcd-emit \ PWM pattern
-    $42 lcd-ddram 1 lcd-emit \ Temp 1 pattern
-    $47 lcd-ddram 2 lcd-emit \ Temp 2 pattern
-    $4C lcd-ddram 0 lcd-emit \ Setpoint pattern
+
     begin
         app-buttons
 
-        spi-read-both
-        $48 lcd-ddram
-            th-temp lcd3.
+        \ Info: display is updated every cycle to avoid errors
+        $0C lcd-ddram $20 lcd-emit \ blank
+                      4 lcd-emit \ PWM pattern
 
-        $43 lcd-ddram
-            th-temp dup lcd3.
+        spi-read-both
+        th-temp swap th-temp
+
+        $40 lcd-ddram
+        lcd"   "   \ 2nd line
+
+        1 lcd-emit \ Temp 1 pattern
+
+        dup lcd-temp.
+
+        $20 lcd-emit
+          2 lcd-emit \ Temp 2 pattern
+
+        over lcd-temp.
+
+        $20 lcd-emit
+          0 lcd-emit \ Setpoint pattern
+
+        th-avg
 
         setpoint @
-        $4D lcd-ddram dup lcd3.
+            dup lcd3.
 
         2dup app-log
 
