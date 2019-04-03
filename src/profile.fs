@@ -28,16 +28,16 @@ create p100
     CHAR 0 c, 
     CHAR 0 c, 
 
-create p222
+create jump
       0 ,  31 , \ start
-     30 , 222 , \ ramp-up
-     90 , 222 , \ keep 100
-    150 ,   0 , \ cool down
+      2 , 250 , \ ramp-up
+    300 , 252 , \ keep 100
+    302 ,   0 , \ cool down
     4   ,
+    CHAR J c,
+    CHAR U c,
+    CHAR M c,
     CHAR P c,
-    CHAR 2 c,
-    CHAR 2 c,
-    CHAR 2 c,
 
 
 \ leadfree 12 cells dump
@@ -48,7 +48,7 @@ leadfree variable profile
 create profiles
     leadfree ,
     p100 ,
-    p222 ,
+    jump ,
 3 constant profiles#
 
 : get-profile-index ( -- n-index )
@@ -148,7 +148,9 @@ create profiles
 
 \ 320 0 profile.
 
+0 variable setpoint     \ profile setpoint (updated once / second by systick if ative)
 : stop-profile ( -- )
+    0 setpoint !
     0 SYST_CSR ! ;
 
 : profile-active? ( -- f )
@@ -156,7 +158,6 @@ create profiles
 
 \ systick handler
 0 variable profile-time \ seconds since profile start
-0 variable setpoint     \ profile setpoint (updated once / second by systick if ative)
 0 variable sys100hz     \ systick counter
 9 GPIOB 2constant oszi
 : profile-systick ( -- )
