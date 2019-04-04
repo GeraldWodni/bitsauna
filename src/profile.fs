@@ -50,6 +50,15 @@ create bake
     CHAR K c,
     CHAR E c,
 
+create bake-resume
+       0 ,  90 , \ start
+150 60 * ,  90 , \ keep for 2 hours
+180 60 * ,   0 , \ cool down (30min)
+    4   ,
+    CHAR B c,
+    CHAR k c,
+    CHAR R c,
+    CHAR e c,
 
 \ leadfree 12 cells dump
 
@@ -61,7 +70,8 @@ create profiles
     p100 ,
     jump ,
     bake ,
-4 constant profiles#
+    bake-resume ,
+5 constant profiles#
 
 : get-profile-index ( -- n-index )
     0 profiles

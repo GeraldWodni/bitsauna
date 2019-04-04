@@ -79,10 +79,21 @@ compiletoflash
     then
     + 2/ ;  \ both working, avg it
 
-: app ( -- )
-    lcd-clear
+0 variable redraw-lcd
+: refresh-lcd ( -- )
+    redraw-lcd @ ?dup 0= if
+        -1 lcd-reset
+        lcd-clear
+        100
+    else
+        1-
+    then redraw-lcd ! ;
 
+: app ( -- )
     begin
+        \ redraw as connections are sucky
+        refresh-lcd
+
         app-buttons
 
         \ Info: display is updated every cycle to avoid errors
