@@ -39,6 +39,17 @@ create jump
     CHAR M c,
     CHAR P c,
 
+create bake
+       0 ,  31 , \ start
+ 30 60 * ,  90 , \ ramp-up (30min)
+150 60 * ,  90 , \ keep for 2 hours
+180 60 * ,   0 , \ cool down (30min)
+    4   ,
+    CHAR B c,
+    CHAR A c,
+    CHAR K c,
+    CHAR E c,
+
 
 \ leadfree 12 cells dump
 
@@ -49,7 +60,8 @@ create profiles
     leadfree ,
     p100 ,
     jump ,
-3 constant profiles#
+    bake ,
+4 constant profiles#
 
 : get-profile-index ( -- n-index )
     0 profiles

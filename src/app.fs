@@ -10,6 +10,23 @@ compiletoflash
 \   #123 #123 #123  \ 2nd line
 \  T1   T2   SETP.  \ function
 
+: lcd-time. ( -- )
+    3 lcd-emit \ Time pattern
+
+    profile-total-time dup
+    999 > if \ if total time > 999, display in minutes
+        [CHAR] m swap \ signal minutes
+        60 /
+        profile-time @ 60 /
+    else
+        [CHAR] s swap \ signal seconds
+        profile-time @
+    then
+    lcd3.   \ show fraction
+    [CHAR] / lcd-emit
+    lcd3.
+    lcd-emit ; \ show seconds/minutes
+
 : app-buttons ( -- )
     buttons-once@ case
         1 of
@@ -26,15 +43,13 @@ compiletoflash
     0 lcd-ddram
     profile-active? if
         profile-name lcd-type
-        3 lcd-emit \ Time pattern
-        5 lcd-ddram profile-time @ lcd3.
-        [CHAR] / lcd-emit
-        profile-total-time lcd3.
+        lcd-time.
     else
         \            NAME
         \    0123456789ABC
         lcd" OFF/SEL:"
         profile-name lcd-type
+        $20 lcd-emit
     then ;
 
 : lcd-temp. ( n -- )
@@ -71,8 +86,7 @@ compiletoflash
         app-buttons
 
         \ Info: display is updated every cycle to avoid errors
-        $0C lcd-ddram $20 lcd-emit \ blank
-                      4 lcd-emit \ PWM pattern
+        $0D lcd-ddram 4 lcd-emit \ PWM pattern
 
         spi-read-both
         th-temp swap th-temp
