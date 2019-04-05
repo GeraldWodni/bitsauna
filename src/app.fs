@@ -84,6 +84,7 @@ compiletoflash
     redraw-lcd @ ?dup 0= if
         -1 lcd-reset
         lcd-clear
+        lcd-patterns
         100
     else
         1-

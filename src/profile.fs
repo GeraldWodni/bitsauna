@@ -6,11 +6,11 @@ compiletoflash
 \ profiles: [<n-seconds> <n-temp>]+ ( last temp is zero ) <n-name> [<char-name]+
 create leadfree
       0 ,  31 , \ start
-     30 , 151 , \ ramp-up 1
-    120 , 181 , \ flux-activate
-    140 , 231 , \ ramp-up 2:ta
-    200 , 231 , \ melting
-    300 ,   0 , \ ramp-down
+     90 , 151 , \ ramp-up 1
+    180 , 181 , \ flux-activate
+    200 , 231 , \ ramp-up 2:ta
+    260 , 231 , \ melting
+    360 ,   0 , \ ramp-down
     4   ,
     CHAR R c, 
     CHAR o c, 

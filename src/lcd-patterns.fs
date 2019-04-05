@@ -64,10 +64,15 @@ create pattern-pwm \ stored in char 4
     dup 100 < if [CHAR] 0 lcd-emit then
     lcd2. ;
 
-: init ( -- )
-    init
+: lcd-patterns ( -- )
     pattern-setpoint    0 lcd-char
     pattern-t1          1 lcd-char
     pattern-t2          2 lcd-char
     pattern-time        3 lcd-char
     pattern-pwm         4 lcd-char ;
+
+: init ( -- )
+    init
+    lcd-patterns ;
+
+cornerstone lpcold
